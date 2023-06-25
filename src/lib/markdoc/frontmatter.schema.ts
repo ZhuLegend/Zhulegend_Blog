@@ -7,6 +7,7 @@ const baseSchema = z.object({
     required_error: "Required frontmatter missing: title",
     invalid_type_error: "title must be a string",
   }),
+  description: z.string().default(""),
   date: z.date({
     required_error: "Required frontmatter missing: date",
     invalid_type_error:
