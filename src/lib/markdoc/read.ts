@@ -1,10 +1,10 @@
-import type { z } from "zod";
+import type {z} from "zod";
 import path from "path";
 import matter from "gray-matter";
 import fs from "fs/promises";
-import { globby } from "globby";
+import {globby} from "globby";
 import Markdoc from "@markdoc/markdoc";
-import { config } from "./markdoc.config";
+import {config} from "./markdoc.config";
 
 // path is relative to where you run the `yarn build` command
 const contentDirectory = path.normalize("./content");
@@ -17,9 +17,7 @@ async function parseAndTransform({ content }: { content: string }) {
     console.error(errors);
     throw new Error("Markdoc validation error");
   }
-  const transformedContent = Markdoc.transform(ast, config);
-
-  return transformedContent;
+  return Markdoc.transform(ast, config);
 }
 
 function validateFrontmatter<T extends z.ZodTypeAny>({
