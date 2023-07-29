@@ -11,7 +11,7 @@ Unity 中如果一直要用异步操作，往常只能使用协程，通过 `IEn
 
 这里是一个简单的例子：
 
-```cs
+```csharp
 async Awaitable<List<Achievement>> GetAchivementsAsync()
 {
     var apiResult = await SomeMethodReturningATask(); // 或者其他可等待类型
@@ -53,7 +53,7 @@ async Awaitable ShowAchievementsView()
 
 在 Unity 官方文档中举了这样一个例子:
 
-```cs
+```csharp
 class SomeMonoBehaviorWithAwaitable : MonoBehavior
 {
     public async void Start()
@@ -94,7 +94,7 @@ class SomeMonoBehaviorWithAwaitable : MonoBehavior
 
 在有些时候，我们需要等待用户输入后才能继续执行后续操作。往常需要通过在用户输入后执行回调函数实现，但是有了 `AwaitableCompletionSource` 我们可以手动调用 `AwaitableCompletionSource.SetResult` 来触发完成( `Completion` )。
 
-```cs
+```csharp
 public class UserNamePrompt : MonoBehavior 
 {
     TextField _userNameTextField;
@@ -133,7 +133,7 @@ public class HighScoreRanks : MonoBehavior
 
 ### 在后台线程中执行繁重任务
 
-```cs
+```csharp
 private async Awaitable<float> DoSomeHeavyComputationInBackgroundAsync(bool continueOnMainThread = true)
 {
     // 调用该函数后，后续代码都会在后台线程执行
@@ -160,7 +160,7 @@ public async Awaitable Start()
 
 ### 帧同步
 
-```cs
+```csharp
 async Awaitable SampleSchedulingJobsForNextFrame()
 {
     // 在帧结束后执行以避免和 Unity 其他子系统出现资源冲突
@@ -180,7 +180,7 @@ JobHandle ScheduleSomethingWithJobSystem()
 
 ### 异步加载结果
 
-```cs
+```csharp
 public async Awaitable Start()
 {
     var operation = Resources.LoadAsync("my-texture");
@@ -191,7 +191,7 @@ public async Awaitable Start()
 
 ### 混合多个 Await 程序
 
-```cs
+```csharp
 public async Awaitable Start() 
 { 
     await CallSomeThirdPartyAPIReturningDotnetTask(); 

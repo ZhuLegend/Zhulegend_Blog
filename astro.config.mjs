@@ -34,8 +34,6 @@ export default defineConfig({
   },
   site: BASE_URL,
   integrations: [sitemap(), tailwind({
-    config: {
-      applyBaseStyles: false
-    }
+    applyBaseStyles: false
   })]
 });

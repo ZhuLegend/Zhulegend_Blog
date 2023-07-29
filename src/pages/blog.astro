@@ -1,21 +1,17 @@
 ---
-import { readAll } from "../lib/markdoc/read";
-import { blog } from "../lib/markdoc/frontmatter.schema";
+import {getCollection} from "astro:content";
 import PageLayout from "../layouts/PageLayout.astro";
 import PageMeta from "../components/PageMeta.astro";
 import { SITE_TITLE } from "../config";
 
-const posts = await readAll({
-  directory: "blog",
-  frontmatterSchema: blog,
-});
+const posts = await getCollection("blog",
+  ({data}) => !data.draft && !data.external);
 
 const sortedPosts = posts
-  .filter((p) => p.frontmatter.draft !== true)
   .sort(
     (a, b) =>
-      new Date(b.frontmatter.date).valueOf() -
-      new Date(a.frontmatter.date).valueOf()
+      b.data.date.valueOf() -
+      a.data.date.valueOf()
   );
 ---
 
@@ -26,7 +22,7 @@ const sortedPosts = posts
       {
         sortedPosts.map((post) => {
           const formattedDate = new Date(
-            post.frontmatter.date
+            post.data.date
           ).toLocaleDateString("zh-cn", {
             year: "numeric",
             month: "short",
@@ -35,9 +31,9 @@ const sortedPosts = posts
           return (
             <li class="grid grid-cols-[1fr] md:grid-cols-[1fr_auto] mb-3 md:gap-2 items-start">
               <div class="title">
-                {post.frontmatter.external ? (
+                {post.data.external ? (
                   <a
-                    href={post.frontmatter.url}
+                    href={post.data.url}
                     target="_blank"
                     class="unset
                         transition-[background-size] duration-300 
@@ -46,7 +42,7 @@ const sortedPosts = posts
                         from-primary-blue to-primary-blue dark:from-primary-blue dark:to-primary-blue
                       "
                   >
-                    <span>{post.frontmatter.title}</span>
+                    <span>{post.data.title}</span>
                     <span>
                       <i class="ml-1 mr-1 text-[12px] pb-2 fa-solid fa-up-right-from-square" />
                     </span>
@@ -61,12 +57,12 @@ const sortedPosts = posts
                         from-primary-blue to-primary-blue dark:from-primary-blue dark:to-primary-blue
                       "
                   >
-                    {post.frontmatter.title}
+                    {post.data.title}
                   </a>
                 )}
               </div>
               <div class="text-text-muted text-sm italic pt-1">
-                <time datetime={post.frontmatter.date.toISOString()}>
+                <time datetime={post.data.date.toISOString()}>
                   {formattedDate}
                 </time>
               </div>
