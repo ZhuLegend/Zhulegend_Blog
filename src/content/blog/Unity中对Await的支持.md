@@ -1,11 +1,11 @@
 ---
 external: false
 title: "Unity中对Await的支持"
-description: "简要介绍了Unity 2023.1开始对C#中 await 的支持，并提供了数个await的应用场景"
+description: "简要介绍了Unity 2023.1开始对C#中 await 的支持、使用await时的注意事项，并提供了数个await的应用场景"
 date: 2023-07-29
 ---
 
-## 为什么要用 Await
+## 为什么要用 `await`
 
 Unity 中如果一直要用异步操作，往常只能使用协程，通过 `IEnumerator` 来实现。协程在一些情况下已经足够好了，例如延迟数秒执行代码，例如等待到下一帧执行。但是，通过协程执行函数存在一个较大的问题——无法获取异步的返回值。而在部分情况下，返回值是必要的，例如，从 API 异步的获取数据、从数据库载入数据等。**使用 `Await` ，可以运行你获取异步执行的返回值，同时以近似同步的方式编写异步代码，自由且简单的在主线程和后台线程间切换任务**。
 
@@ -29,7 +29,7 @@ async Awaitable ShowAchievementsView()
 
 本文将会基于 Unity 官方文档([await support](https://docs.unity.cn/cn/2023.2/Manual/AwaitSupport.html))，结合个人理解，简要介绍 Unity 2023.1 中新增的 `await` 支持、在 Unity 中使用 `Awaitable` 需要注意的地方、 `await` 和 协程、C# Job的差别并在最后提供几个 `await` 的使用示例。
 
-## Unity 2023.1 中新增的 await
+## Unity 2023.1 中新增的 `await`
 
 `Await` 这一异步函数编写、调用方式已经出现很久了，这里就不再赘述。Unity 对 `Await` 提供了以下几个方面的支持
 
@@ -42,7 +42,7 @@ async Awaitable ShowAchievementsView()
 
 这里值得关注的就是 Unity 提供的 `Awaitable` 类，对于基础的 C#类，我们使用 `System.Threading.Task` 作为异步函数返回值的标记，但是 Unity 针对游戏需求，设计了可能更适合游戏开发场景的异步返回值类型，下面将详细介绍两者异同。
 
-## Unity 中 Awaitable 的注意事项
+## Unity 中 `Awaitable` 的注意事项
 
 对于为何要单独设计一个 `Awaitable` 类，Unity 官方文档中是这么说的：
 
@@ -88,9 +88,9 @@ class SomeMonoBehaviorWithAwaitable : MonoBehavior
 
 在介绍了Unity中 `await` 使用的注意事项之后，下面会给出几个例子来展示 `await` 可能的使用场景。
 
-## await 使用示例
+## `await` 使用示例
 
-### 通过 AwaitableCompletionSource 封装现有异步操作
+### 通过 `AwaitableCompletionSource` 封装现有异步操作
 
 在有些时候，我们需要等待用户输入后才能继续执行后续操作。往常需要通过在用户输入后执行回调函数实现，但是有了 `AwaitableCompletionSource` 我们可以手动调用 `AwaitableCompletionSource.SetResult` 来触发完成( `Completion` )。
 
@@ -129,7 +129,20 @@ public class HighScoreRanks : MonoBehavior
 
 可以看到，通过上述代码，我们避免了通过回调函数实现用户名称的设置，相关代码被放在一个整体的代码块中，可读性和整洁性都有了显著的提升。
 
-需要注意的是，在调用 `SetResult` 方法之后，**TODO： SetResult之后Awaitable对象是否会自动重置为新的**
+值得一提的是，**`AwaitableCompletionSource.Awaitable` 每次都会返回一个新的 `Awaitable` 对象**，所以在使用的时候不需要担心更新 `AwaitableCompletionSource.Awaitable` 对象的问题，只需要注意不要多次等待( `await` )即可。
+
+> `AwaitableCompletionSource.Awaitable` 对应源码：
+>  ```csharp
+>  public UnityEngine.Awaitable<T> Awaitable { get; private set; } = UnityEngine.Awaitable<T>.GetManaged();
+> 
+> internal static Awaitable<T> GetManaged()
+> {
+>   Awaitable awaitable = Awaitable.NewManagedAwaitable();
+>   Awaitable<T> managed = Awaitable<T>._pool.Get();
+>   managed._awaitable = awaitable;
+>   return managed;
+> }
+>  ```
 
 ### 在后台线程中执行繁重任务
 
@@ -202,7 +215,7 @@ public async Awaitable Start()
 }
 ```
 
-## await、协程、C# Job
+## `await`、协程、C# Job
 
 - `await` 性能略优于协程，当协程返回空值时，这一差异更加明显
 - 相比C# Job，`await` 更适合：
