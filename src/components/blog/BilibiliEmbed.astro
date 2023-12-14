@@ -1,0 +1,20 @@
+---
+type Props = {
+    bvid: string;
+};
+
+const {bvid} = Astro.props;
+---
+<div>
+    <iframe
+            class="aspect-video w-full"
+            src={"//player.bilibili.com/player.html?bvid=" + bvid}
+            frame-border="0"
+            scrolling="no"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            framespacing="0"
+            border="0"
+    >
+    </iframe>
+</div>

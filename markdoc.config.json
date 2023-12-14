@@ -1,0 +1,12 @@
+[
+  {
+    "id": "zhulegend-blog",
+    "path": "src/content",
+    "schema": {
+      "path": "markdoc.config.ts",
+      "type": "esm",
+      "property": "default",
+      "watch": true
+    }
+  }
+]
