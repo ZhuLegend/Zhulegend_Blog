@@ -3,7 +3,7 @@
 
 export const SITE_TITLE = "Zhulegend's Blog";
 export const SITE_DESCRIPTION =
-  "欢迎来到我的网站，这里会不定时更新Swift、Python、Js/Ts、Rust相关博客";
+    "欢迎来到我的网站，这里会不定时更新Swift、Python、Js/Ts、Rust相关博客";
 export const TWITTER_HANDLE = "@yourtwitterhandle";
 export const MY_NAME = "Zijun Zhu";
 

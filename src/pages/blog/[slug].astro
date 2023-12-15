@@ -1,8 +1,8 @@
 ---
 import BlogPostMeta from "../../components/BlogPostMeta.astro";
 import ContentLayout from "../../layouts/ContentLayout.astro";
-import { SITE_URL } from "../../config";
-import { getCollection } from 'astro:content';
+import {SITE_URL} from "../../config";
+import {getCollection} from 'astro:content';
 import "../../styles/prism-coldark-dark.css"
 import {InferGetStaticParamsType, InferGetStaticPropsType} from "astro";
 
@@ -10,9 +10,9 @@ export async function getStaticPaths() {
   const posts = await getCollection("blog",
       ({data}) => !data.draft && !data.external);
 
-  return posts.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
-  }));
+    return posts.map(entry => ({
+        params: {slug: entry.slug}, props: {entry},
+    }));
 }
 
 type Params = InferGetStaticParamsType<typeof getStaticPaths>;
@@ -25,9 +25,9 @@ const frontmatter = entry.data;
 const {Content, headings} = await entry.render();
 
 const ogImageAbsoluteUrl =
-  frontmatter.external !== true && frontmatter.ogImagePath
-    ? new URL(frontmatter.ogImagePath, SITE_URL).toString()
-    : undefined;
+    frontmatter.external !== true && frontmatter.ogImagePath
+        ? new URL(frontmatter.ogImagePath, SITE_URL).toString()
+        : undefined;
 ---
 
 <ContentLayout title={frontmatter.title} date={frontmatter.date} headings={headings}>

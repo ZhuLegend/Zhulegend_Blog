@@ -1,5 +1,5 @@
 // 1. Import utilities from `astro:content`
-import { defineCollection } from 'astro:content';
+import {defineCollection} from 'astro:content';
 import {blog, project} from "../lib/frontmatter.schema";
 
 // 2. Define a `type` and `schema` for each collection
@@ -9,8 +9,8 @@ const blogCollection = defineCollection({
 });
 
 const projectCollection = defineCollection({
-   type: "content",
-   schema: project,
+    type: "content",
+    schema: project,
 });
 
 // 3. Export a single `collections` object to register your collection(s)
