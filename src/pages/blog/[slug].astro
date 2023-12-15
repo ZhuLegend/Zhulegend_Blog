@@ -22,7 +22,7 @@ const {slug} = Astro.params as Params;
 const {entry} = Astro.props as Props;
 
 const frontmatter = entry.data;
-const { Content } = await entry.render();
+const {Content, headings} = await entry.render();
 
 const ogImageAbsoluteUrl =
   frontmatter.external !== true && frontmatter.ogImagePath
@@ -30,14 +30,20 @@ const ogImageAbsoluteUrl =
     : undefined;
 ---
 
-<ContentLayout title={frontmatter.title} date={frontmatter.date}>
-  <BlogPostMeta
-    title={frontmatter.title}
-    description={frontmatter.external ? undefined : frontmatter.description}
-    publishDate={frontmatter.date.toISOString()}
-    pagePath={`/blog/${slug}`}
-    ogImageAbsoluteUrl={ogImageAbsoluteUrl}
-    slot="meta"
-  />
-  <Content slot="content"/>
+<ContentLayout title={frontmatter.title} date={frontmatter.date} headings={headings}>
+    <BlogPostMeta
+            title={frontmatter.title}
+            description={frontmatter.external ? undefined : frontmatter.description}
+            publishDate={frontmatter.date.toISOString()}
+            pagePath={`/blog/${slug}`}
+            ogImageAbsoluteUrl={ogImageAbsoluteUrl}
+            slot="meta"
+    />
+    <Content slot="content"/>
 </ContentLayout>
+<style>
+    :global(table) {
+        display: block;
+        overflow: auto;
+    }
+</style>

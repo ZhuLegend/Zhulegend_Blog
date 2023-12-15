@@ -1,0 +1,77 @@
+---
+import {MarkdownHeading} from "astro";
+import TableOfContentsHeading from "./TableOfContentsHeading.astro";
+
+interface Props {
+    headings: MarkdownHeading[]
+}
+interface Toc extends MarkdownHeading {
+    subheadings: Toc[]
+}
+
+function buildToc(headings: MarkdownHeading[]): Toc[] {
+    const toc: Toc[] = [];
+    const parentHeadings = new Map<number, Toc>();
+    headings.forEach((h) => {
+        const heading: Toc = {...h, subheadings: []};
+        parentHeadings.set(heading.depth, heading);
+        if (heading.depth === 2) {
+            toc.push(heading);
+        } else {
+            parentHeadings.get(heading.depth - 1).subheadings.push(heading);
+        }
+    });
+    return toc;
+}
+
+const {headings} = Astro.props;
+const toc = buildToc(headings);
+---
+
+<nav class="toc">
+    <ul>
+        {toc.map((heading) =>
+                <TableOfContentsHeading heading={heading}/>)}
+    </ul>
+</nav>
+<script>
+    const allHeading = document.querySelectorAll<HTMLHeadingElement>("article h2, h3, h4, h5");
+    addIntersectionObserver();
+
+    function addIntersectionObserver() {
+        const observer = new IntersectionObserver((sections) => {
+            let latestHeading: HTMLAnchorElement | undefined = undefined;
+            sections.forEach((section) => {
+                const heading = section.target;
+                if (!heading) return;
+                const id = heading.getAttribute("id");
+
+                // Get the link to this section's heading
+                const link = document.querySelector<HTMLAnchorElement>(`nav.toc li a[href="#${id}"]`);
+                if (!link) return;
+
+                if (section.intersectionRatio > 0) {
+                    latestHeading = link;
+                }
+            });
+            if (latestHeading != undefined) {
+                OnLatestHeadingChange(latestHeading);
+            }
+        });
+
+        // Observe all the title of the article
+        allHeading.forEach((title) => {
+            observer.observe(title);
+        });
+    }
+
+    function OnLatestHeadingChange(heading: HTMLAnchorElement) {
+        allHeading.forEach((item) => {
+            let a = document.querySelector(`nav.toc li a[href=\"#${item.getAttribute("id")}\"]`);
+            a.classList.replace("bg-[length:100%_55%]", "bg-[length:0%_55%]");
+            a.classList.replace("dark:bg-[length:100%_2px]", "dark:bg-[length:0%_2px]");
+        });
+        heading.classList.replace("bg-[length:0%_55%]", "bg-[length:100%_55%]")
+        heading.classList.replace("dark:bg-[length:0%_2px]", "dark:bg-[length:100%_2px]")
+    }
+</script>

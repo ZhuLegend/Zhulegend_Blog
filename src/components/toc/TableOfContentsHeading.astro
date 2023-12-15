@@ -1,0 +1,40 @@
+---
+import {MarkdownHeading} from "astro";
+
+interface Props {
+    heading: Toc;
+}
+
+interface Toc extends MarkdownHeading {
+    subheadings: Toc[]
+}
+
+const {heading} = Astro.props;
+---
+
+<li>
+    <a href={'#' + heading.slug}
+       class="
+       unset
+       transition-[background-size] duration-300
+       bg-gradient-to-r bg-left-bottom bg-no-repeat
+       bg-[length:0%_55%] dark:bg-[length:0%_2px]
+       from-primary-blue to-primary-blue dark:from-primary-blue dark:to-primary-blue
+       hover:from-bg-selection hover:to-bg-selection
+       hover:dark:from-primary-green hover:dark:to-primary-green
+       hover:bg-[length:100%_55%]
+       hover:dark:bg-[length:100%_2px]
+       "
+    >
+        {heading.text}
+    </a>
+    {
+        heading.subheadings.length > 0 && (
+                    <ul>
+                        {heading.subheadings.map((subheading) => (
+                                <Astro.self heading={subheading}/>
+                        ))}
+                    </ul>
+        )
+    }
+</li>

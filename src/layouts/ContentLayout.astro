@@ -14,13 +14,16 @@ import Favicon from "./Favicon.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import VercelSpeedInsightsScript from "./VercelSpeedInsightsScript.astro";
+import TableOfContents from "../components/toc/TableOfContents.astro";
+import {MarkdownHeading} from "astro";
 
 export interface Props {
-  title: string;
-  date: Date;
+    title: string;
+    date: Date;
+    headings: MarkdownHeading[];
 }
 
-const { title, date } = Astro.props;
+const {title, date, headings} = Astro.props;
 const formattedDate = new Date(date).toLocaleDateString("zh-CN", {
   year: "numeric",
   month: "short",
@@ -57,12 +60,19 @@ const formattedDate = new Date(date).toLocaleDateString("zh-CN", {
           </span>
         </h1>
         <time class="block mb-[2em] text-text-muted">{formattedDate}</time>
-        <slot name="content" />
-      </section>
-    </main>
-    <Footer />
-    <style>
-      body {
+        <div class="flex max-w-2xl lg:max-w-5xl mx-auto gap-12 items-start">
+            <div class="hidden lg:block order-2 pt-8 sticky toc top-0">
+                <TableOfContents headings={headings}/>
+            </div>
+            <div class="flex-initial max-w-[100%]">
+                <slot name="content"/>
+            </div>
+        </div>
+    </section>
+</main>
+<Footer/>
+<style>
+    body {
         display: grid;
         grid-template-areas:
           "header"
