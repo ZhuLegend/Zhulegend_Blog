@@ -7,8 +7,8 @@ import "../../styles/prism-coldark-dark.css"
 import {InferGetStaticParamsType, InferGetStaticPropsType} from "astro";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog",
-      ({data}) => !data.draft && !data.external);
+    const posts = await getCollection("blog",
+        ({data}) => (import.meta.env.DEV || !data.draft) && !data.external);
 
     return posts.map(entry => ({
         params: {slug: entry.slug}, props: {entry},

@@ -5,7 +5,7 @@ import PageMeta from "../components/PageMeta.astro";
 import {SITE_TITLE} from "../config";
 
 const posts = await getCollection("blog",
-  ({data}) => !data.draft && !data.external);
+    ({data}) => (import.meta.env.DEV || !data.draft) && !data.external);
 
 const sortedPosts = posts
     .sort(
