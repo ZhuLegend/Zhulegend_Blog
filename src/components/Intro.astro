@@ -1,4 +1,6 @@
 ---
+import headImg from "../media/head.png";
+import {Image} from "astro:assets";
 ---
 
 <section class="mb-8">
@@ -18,9 +20,10 @@
     </div>
     <div>
         <div class="content-center text-center md:flex flex-row items-center">
-            <img src="/head.png"
-                 class="w-36 h-36 md:w-44 md:h-44 my-0 mx-auto object-contain aspect-square rounded-full flex-auto md:shrink-0"
-                 alt="作者头像">
+            <Image src={headImg}
+                   class="w-36 h-36 md:w-44 md:h-44 my-0 mx-auto object-contain aspect-square rounded-full flex-auto md:shrink-0"
+                   alt="作者卡通头像"
+            />
             <div class="flex-auto">
                 <strong>你好～欢迎来到我的博客</strong>
                 <p>这里会不定时更新Python、Swift的语言/框架相关技术博客和我的个人随感</p>
